@@ -9,9 +9,16 @@ type PendingTasksProps = {
 const TaskBar = ({ title, taskList, handleToggle }: PendingTasksProps) => {
   return (
     <div>
-      <h3>{title}</h3>
+      <h3 className={'taskTitle'}>{title}</h3>
       {taskList.map((task) => (
-        <p key={task.id} onClick={() => handleToggle(task)}>
+        <p
+          className={` task ${
+            title === 'Pending List' ? 'pendingTask' : 'completedTask'
+          }`}
+          key={task.id}
+          onClick={() => handleToggle(task)}
+          aria-label="task"
+        >
           {task.taskInfo}
         </p>
       ))}

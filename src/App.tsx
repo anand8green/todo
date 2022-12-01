@@ -35,7 +35,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <Header title={'Todo list'} />
       <FormData handleTask={handleTask} task={task} setTask={setTask} />
       <TaskBar
