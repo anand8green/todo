@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import FormData from './components/FormData'
+import Header from './components/Header'
+import TaskBar from './components/TaskBar'
 
 export type taskProps = {
   id: number
@@ -7,30 +10,44 @@ export type taskProps = {
 
 const App = () => {
   const [task, setTask] = useState('')
-  const [compList, setCompList] = useState<taskProps[]>([
-    { id: 1, taskInfo: 'eat mango' },
-  ])
-  const [pendList, setPendList] = useState<taskProps[]>([
-    { id: 9, taskInfo: 'play cricket' },
-  ])
+  const [compList, setCompList] = useState<taskProps[]>([])
+  const [pendList, setPendList] = useState<taskProps[]>([])
+
+  const handleTask = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (task.length > 2) {
+      let newTask = {
+        id: Date.now(),
+        taskInfo: task,
+      }
+      setPendList((pendList) => [...pendList, newTask])
+      setTask('')
+    }
+  }
+  const handleToggle = (task: taskProps) => {
+    if (pendList.includes(task)) {
+      setPendList([...pendList.filter((allTask) => allTask.id !== task.id)])
+      setCompList([...compList, task])
+    } else {
+      setPendList([...pendList, task])
+      setCompList([...compList.filter((allTask) => allTask.id !== task.id)])
+    }
+  }
 
   return (
     <div>
-      <h1>Todo list</h1>
-      <input
-        type="text"
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
+      <Header title={'Todo list'} />
+      <FormData handleTask={handleTask} task={task} setTask={setTask} />
+      <TaskBar
+        title="Pending List"
+        taskList={pendList}
+        handleToggle={handleToggle}
       />
-      <button>Add</button>
-      <h3>Pending List</h3>
-      {compList.map((item) => (
-        <p key={item.id}>{item.taskInfo}</p>
-      ))}
-      <h3>Completed List</h3>
-      {pendList.map((item) => (
-        <p key={item.id}>{item.taskInfo}</p>
-      ))}
+      <TaskBar
+        title="Completed List"
+        taskList={compList}
+        handleToggle={handleToggle}
+      />
     </div>
   )
 }
